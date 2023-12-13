@@ -7,39 +7,40 @@ const handleSubmit = async (inputsValue, setErrorsState, navigate, id) => {
   try {
     const joiResponse = validateEditProfile(inputsValue);
     setErrorsState(joiResponse);
-    if (joiResponse) return;
-
-    const { data } = await axios.put("/users/" + id, {
-      name: {
-        first: inputsValue.first,
-        middle: inputsValue.middle,
-        last: inputsValue.last,
-      },
-      phone: inputsValue.phone,
-      image: {
-        url: inputsValue.url,
-        alt: inputsValue.alt,
-      },
-      address: {
-        state: inputsValue.state,
-        country: inputsValue.country,
-        city: inputsValue.city,
-        street: inputsValue.street,
-        houseNumber: inputsValue.houseNumber,
-        zip: +inputsValue.zip,
-      },
-    });
-    toast.success("Your profile was updated successfully", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
-    navigate(ROUTES.PROFILE);
+    if (joiResponse) {
+      const { data } = await axios.put("/users/" + id, {
+        name: {
+          first: inputsValue.first,
+          middle: inputsValue.middle,
+          last: inputsValue.last,
+        },
+        phone: inputsValue.phone,
+        image: {
+          url: inputsValue.url,
+          alt: inputsValue.alt,
+        },
+        address: {
+          state: inputsValue.state,
+          country: inputsValue.country,
+          city: inputsValue.city,
+          street: inputsValue.street,
+          houseNumber: inputsValue.houseNumber,
+          zip: +inputsValue.zip,
+        },
+      });
+      console.log(data.data);
+      toast.success("Your profile was updated successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      navigate(ROUTES.PROFILE);
+    }
   } catch (err) {
     console.log(err);
     toast.error("Request failed... try again", {

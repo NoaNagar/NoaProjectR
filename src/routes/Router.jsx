@@ -46,6 +46,7 @@ const Router = () => {
           </AuthGuard>
         }
       />
+
       <Route
         path={ROUTES.SANDBOX}
         element={
@@ -65,6 +66,7 @@ const Router = () => {
           </AuthGuard>
         }
       />
+
       <Route path="*" element={<Error404Page />} />
     </Routes>
   );

@@ -6,7 +6,7 @@ import { Alert, Grid } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { handleSubmit } from "./EditProfile";
-import { inputsValueObj } from "../MyProfile/inputValueObj";
+import { inputsValueObj } from "./inputValueObj";
 
 const EditProfile = () => {
   const [inputsValue, setInputsValue] = useState(inputsValueObj);

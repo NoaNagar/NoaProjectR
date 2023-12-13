@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Container,
   TextField,
@@ -9,15 +9,30 @@ import {
   Alert,
 } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 import ROUTES from "../../routes/ROUTES";
-import { handleUpdateChangesClick } from "./EditCardPage";
 import { inputsValueObject } from "../CreateCardPage/inputValue";
+import { UpdateChangesClick } from "./EditCardPage";
+import { NewDataInputs } from "./newDataInput";
 
 const EditCardPage = () => {
-  const navigate = useNavigate();
-  const [inputsValue, setInputValue] = useState(inputsValueObject);
-  const { id: _id } = useParams();
   const [errorsState, setErrorsState] = useState(null);
+  const navigate = useNavigate();
+  const [inputsValue, setInputValue] = useState(inputsValueObject());
+  const { id: _id } = useParams();
+  useEffect(() => {
+    axios
+      .get("/cards/" + _id)
+      .then(({ data }) => {
+        setInputValue(NewDataInputs(data));
+      })
+      .catch((err) => {
+        toast.info(`Somthing is wrong with the server`, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      });
+  }, [_id]);
 
   const handleInputChange = (e) => {
     setInputValue((currentState) => ({
@@ -25,21 +40,19 @@ const EditCardPage = () => {
       [e.target.id]: e.target.value,
     }));
   };
-
-  const handleClick = () => {
-    handleUpdateChangesClick(inputsValue, setErrorsState, navigate, _id);
+  const handleUpdateChangesClick = () => {
+    UpdateChangesClick(inputsValue, setErrorsState, navigate, _id);
   };
-
   return (
-    <Container sx={{ mt: 12 }}>
-      <Typography variant="h3" sx={{ mb: 1, padding: "10px", pb: "0px" }}>
-        Edit Card{" "}
+    <Container sx={{ padding: "50px", paddingBottom: "60px" }}>
+      <Typography variant="h2" sx={{ mb: 1, padding: "10px", pb: "0px" }}>
+        Edit Your Card
       </Typography>
       <Typography variant="body1" sx={{ mb: 1, padding: "3px", ml: "7px" }}>
         Put a new values in the correct input
       </Typography>
       <Divider sx={{ mb: 3 }} />
-      <Grid container flexDirection={"column"} sx={{ width: "60vw" }}>
+      <Grid container flexDirection={"column"}>
         <TextField
           id="title"
           label="Title"
@@ -96,6 +109,9 @@ const EditCardPage = () => {
           onChange={handleInputChange}
           value={inputsValue.web}
         />
+        {errorsState && errorsState.web && (
+          <Alert severity="warning">{errorsState.web}</Alert>
+        )}
         <TextField
           id="email"
           label="Email"
@@ -108,6 +124,7 @@ const EditCardPage = () => {
         {errorsState && errorsState.email && (
           <Alert severity="warning">{errorsState.email}</Alert>
         )}
+
         <TextField
           id="url"
           label="Url"
@@ -116,6 +133,9 @@ const EditCardPage = () => {
           onChange={handleInputChange}
           value={inputsValue.url}
         />
+        {errorsState && errorsState.url && (
+          <Alert severity="warning">{errorsState.url}</Alert>
+        )}
         <TextField
           id="alt"
           label="Alt"
@@ -124,6 +144,9 @@ const EditCardPage = () => {
           onChange={handleInputChange}
           value={inputsValue.alt}
         />
+        {errorsState && errorsState.alt && (
+          <Alert severity="warning">{errorsState.alt}</Alert>
+        )}
         <TextField
           id="state"
           label="State"
@@ -132,6 +155,9 @@ const EditCardPage = () => {
           onChange={handleInputChange}
           value={inputsValue.state}
         />
+        {errorsState && errorsState.state && (
+          <Alert severity="warning">{errorsState.state}</Alert>
+        )}
         <TextField
           id="country"
           label="Country"
@@ -188,37 +214,39 @@ const EditCardPage = () => {
           onChange={handleInputChange}
           value={inputsValue.zip}
         />
-        <Grid container spacing={2}>
-          <Grid item lg={8} md={8} sm={8} xs>
-            <Button
-              variant="outlined"
-              sx={{
-                mt: 2,
-                width: "100%",
-                ml: "0%",
-                bgcolor: "lightskyblue",
-                color: "white",
-              }}
-              onClick={handleClick}
-            >
-              Update Changes
-            </Button>
-          </Grid>
-          <Grid item xs sx={{ mb: 2 }}>
-            <Link to={ROUTES.MYCARDS}>
-              <Button
-                variant="outlined"
-                sx={{
-                  mt: 2,
-                  width: "100%",
-                  ml: "0%",
-                  bgcolor: "navy",
-                }}
-              >
-                Discard Changes
-              </Button>
-            </Link>
-          </Grid>
+        {errorsState && errorsState.zip && (
+          <Alert severity="warning">{errorsState.zip}</Alert>
+        )}
+      </Grid>
+      <Grid container spacing={2}>
+        <Grid item lg={8} md={8} sm={8} xs>
+          <Button
+            variant="outlined"
+            sx={{
+              mt: 2,
+              width: "100%",
+              ml: "0%",
+              bgcolor: "primary.main",
+              color: "myblue.main",
+            }}
+            onClick={handleUpdateChangesClick}
+          >
+            Update Changes
+          </Button>
+        </Grid>
+        <Grid item xs>
+          <Button
+            variant="outlined"
+            sx={{
+              mt: 2,
+              width: "100%",
+              ml: "0%",
+              color: "primary.main",
+            }}
+            href="/mycards"
+          >
+            Discard Changes
+          </Button>
         </Grid>
       </Grid>
     </Container>
